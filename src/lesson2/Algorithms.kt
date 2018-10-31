@@ -31,21 +31,18 @@ import kotlin.math.max
  */
 fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
     val array = arrayListOf<Int>()
-    var first = 0
-    var second = 0
-    var k = 1
+    var diff = 0
+    var max = 0
+    var sell = 0
+    var buy = 0
     File(inputName).bufferedReader().readLines().forEach { it -> array.add(it.toInt()) }
-    while (k <= array.lastIndex) {
-        if (array[k] - array[k - 1] < array[k + 1] - array[k])
-            second = k + 1
-        first = k
-        if (array[k] - array[k - 1] > array[k + 1] - array[k])
-            second = k + 2
-        first = k + 1
-        k++
+    for (i in 1..array.lastIndex) {
+        diff = array[i + 1] - array[i]
+        if (max > diff) max = diff
+        sell = i + 1
+        buy = i
     }
-    return Pair(first, second)
-
+    return Pair(buy, sell)
 }
 
 /**
