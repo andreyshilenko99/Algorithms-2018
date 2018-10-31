@@ -2,6 +2,11 @@
 
 package lesson1
 
+import com.sun.org.apache.xerces.internal.impl.io.UTF8Reader
+import java.io.File
+import java.lang.StringBuilder
+import java.util.*
+
 /**
  * Сортировка времён
  *
@@ -31,8 +36,29 @@ package lesson1
  * В случае обнаружения неверного формата файла бросить любое исключение.
  */
 fun sortTimes(inputName: String, outputName: String) {
-    TODO()
+    val input = File(inputName).bufferedReader()
+    val output = File(outputName).bufferedWriter()
+    val sortlist = mutableListOf<Int>()
+    val list = (input.readLines().map { it -> it.split(':') })
+    var j = 0
+    var i = 0
+    if (inputName.isEmpty()) throw IllegalArgumentException()
+    while (j <= list.lastIndex) {
+        val total = list[j][0].toInt() * 3600 + list[j][1].toInt() * 60 + list[j][2].toInt()
+        sortlist.add(total)
+        j++
+    }
+    while (i <= sortlist.lastIndex) {
+        output.write("${twoDigitStr(sortlist.sorted()[i] / 3600)}:"
+                + "${twoDigitStr((sortlist.sorted()[i] / 60) % 60)}:" + "${twoDigitStr(sortlist.sorted()[i] % 60)}")
+        output.newLine()
+        i++
+    }
+    output.close()
 }
+
+fun twoDigitStr(n: Int) = if (n in 0..9) "0$n" else "$n"
+
 
 /**
  * Сортировка адресов
@@ -61,7 +87,31 @@ fun sortTimes(inputName: String, outputName: String) {
  * В случае обнаружения неверного формата файла бросить любое исключение.
  */
 fun sortAddresses(inputName: String, outputName: String) {
-    TODO()
+    val input = File(inputName).bufferedReader()
+    val output = File(outputName).bufferedWriter()
+    val sortlist = mutableListOf<String>()
+    val streetList = (input.readLines().map { it -> it.split("-") })
+    var j = 0
+    var i = 0
+    while (j <= streetList.lastIndex) {
+        sortlist.add(streetList[j][1])
+        j++
+    }
+    val sort = sortlist.toSortedSet().toList()
+    while (i <= sort.lastIndex) {
+        output.write("${sort[i].toString().trim()} - ")
+        val array = mutableListOf<String>()
+        for (k in 0 until streetList.size) {
+            if (streetList[k][1] == sort[i]) {
+                array.add(streetList[k][0].trim())
+            }
+        }
+        output.write(array.joinToString(", "))
+        i++
+        output.newLine()
+    }
+    output.close()
+
 }
 
 /**
@@ -95,7 +145,12 @@ fun sortAddresses(inputName: String, outputName: String) {
  * 121.3
  */
 fun sortTemperatures(inputName: String, outputName: String) {
-    TODO()
+    val array = arrayListOf<Double>()
+    (File(inputName).bufferedReader().readLines().forEach { it -> array.add(it.toDouble()) })
+    File(outputName).writer().run {
+        array.sorted().forEach { it -> write("$it\n") }
+        close()
+    }
 }
 
 /**

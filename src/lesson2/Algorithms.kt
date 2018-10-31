@@ -2,6 +2,9 @@
 
 package lesson2
 
+import java.io.File
+import kotlin.math.max
+
 /**
  * Получение наибольшей прибыли (она же -- поиск максимального подмассива)
  * Простая
@@ -27,7 +30,22 @@ package lesson2
  * В случае обнаружения неверного формата файла бросить любое исключение.
  */
 fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
-    TODO()
+    val array = arrayListOf<Int>()
+    var first = 0
+    var second = 0
+    var k = 1
+    File(inputName).bufferedReader().readLines().forEach { it -> array.add(it.toInt()) }
+    while (k <= array.lastIndex) {
+        if (array[k] - array[k - 1] < array[k + 1] - array[k])
+            second = k + 1
+        first = k
+        if (array[k] - array[k - 1] > array[k + 1] - array[k])
+            second = k + 2
+        first = k + 1
+        k++
+    }
+    return Pair(first, second)
+
 }
 
 /**
