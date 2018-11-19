@@ -84,7 +84,29 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
          * Средняя
          */
         private fun findNext(): Node<T>? {
-            TODO()
+            if (size == 0) throw IllegalArgumentException()
+            val curNode = current ?: return find(first())
+            if (curNode.value == last()) throw IllegalArgumentException()
+            if (curNode.right != null) {
+                var follow = curNode.right ?: throw IllegalArgumentException()
+                while (follow.left != null)
+                    follow = follow.left ?: throw IllegalArgumentException()
+                return follow
+            } else {
+                var prev = root ?: throw IllegalArgumentException()
+                var follow = root ?: throw IllegalArgumentException()
+                while (prev != curNode) {
+                    if (curNode.value < prev.value) {
+                        follow = prev
+                        prev = prev.left ?: return null
+                    } else prev = prev.right ?: return null
+                }
+                return follow
+            }
+            /**
+             * labor intensity: O(N*logN)
+             * resource intensity: O(logN)
+             */
         }
 
         override fun hasNext(): Boolean = findNext() != null
