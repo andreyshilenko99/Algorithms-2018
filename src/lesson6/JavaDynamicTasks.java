@@ -2,6 +2,9 @@ package lesson6;
 
 import kotlin.NotImplementedError;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -33,8 +36,38 @@ public class JavaDynamicTasks {
      * то вернуть ту, в которой числа расположены раньше (приоритет имеют первые числа).
      * В примере ответами являются 2, 8, 9, 12 или 2, 5, 9, 12 -- выбираем первую из них.
      */
-    public static List<Integer> longestIncreasingSubSequence(List<Integer> list) {
-        throw new NotImplementedError();
+    public static List<Integer> longestIncreasingSubSequence(List<Integer> list){
+        int seqSize = list.size();
+        if (seqSize == 0 || seqSize == 1) return list;
+
+        int[] start = new int[seqSize];
+        Arrays.fill(start, -1);
+
+        int[] sizes = new int[seqSize];
+        Arrays.fill(sizes, -1);
+
+        int position = 0;
+        int maxLength = sizes[0];
+        for (int i = 0; i < seqSize; i++) {
+            for (int j = 0; j < i; j++) {
+                if (list.get(i) > list.get(j) && sizes[i] <= sizes[j]) {
+                    start[i] = j;
+                    sizes[i] = sizes[j] + 1;
+                    if (sizes[i] > maxLength) {
+                        position = i;
+                        maxLength = sizes[i];
+                    }
+                }
+            }
+        }
+
+        List<Integer> result = new ArrayList<>();
+        while (position != -1) {
+            result.add(list.get(position));
+            position = start[position];
+        }
+        Collections.reverse(result);
+        return result;
     }
 
     /**

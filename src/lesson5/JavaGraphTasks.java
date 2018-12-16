@@ -2,6 +2,8 @@ package lesson5;
 
 import kotlin.NotImplementedError;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,7 +36,29 @@ public class JavaGraphTasks {
      * связного графа ровно по одному разу
      */
     public static List<Graph.Edge> findEulerLoop(Graph graph) {
-        throw new NotImplementedError();
+
+
+        List<Graph.Vertex> res = new ArrayList<>();
+        find(graph, graph.get("A"), res);
+
+
+        List<Graph.Edge> edges = new ArrayList<>();
+        for (int i = 0; i < res.size() - 1; i++) {
+            edges.add(graph.getConnection(res.get(0), res.get(1)));
+        }
+        System.out.println(edges);
+        return edges;
+    }
+
+    private static void find(Graph graph, Graph.Vertex vertex, List<Graph.Vertex> result) {
+        for (Graph.Edge edge : graph.getEdges()) {
+            if (edge.getBegin().getName().equals(vertex.getName())) {
+                graph.getVertices().remove(edge.getBegin());
+                graph.getVertices().remove(edge.getEnd());
+                find(graph, edge.getEnd(), result);
+            }
+        }
+        result.add(vertex);
     }
 
     /**
@@ -94,7 +118,33 @@ public class JavaGraphTasks {
      * Эта задача может быть зачтена за пятый и шестой урок одновременно
      */
     public static Set<Graph.Vertex> largestIndependentVertexSet(Graph graph) {
-        throw new NotImplementedError();
+        List<Set<Graph.Vertex>> allResults = new ArrayList<>();
+
+        for (Graph.Vertex vertex : graph.getVertices()) {
+
+            Set<Graph.Vertex> candidates = new HashSet<>();
+            Set<Graph.Vertex> exists = new HashSet<>();
+
+            for (Graph.Vertex anotherVertex : graph.getVertices()) {
+                if (!graph.getNeighbors(vertex).contains(anotherVertex) &&
+                        !exists.contains(anotherVertex)) {
+                    exists.addAll(graph.getNeighbors(anotherVertex));
+                    candidates.add(anotherVertex);
+                }
+            }
+            allResults.add(candidates);
+        }
+
+        Set<Graph.Vertex> result = new HashSet<>();
+
+        for (int i = 0, allResultsSize = allResults.size(); i < allResultsSize; i++) {
+            Set<Graph.Vertex> subRes = allResults.get(i);
+            if (result.size() < subRes.size()) {
+                result = subRes;
+            }
+        }
+
+        return result;
     }
 
     /**
