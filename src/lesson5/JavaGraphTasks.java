@@ -168,6 +168,27 @@ public class JavaGraphTasks {
      * Ответ: A, E, J, K, D, C, H, G, B, F, I
      */
     public static Path longestSimplePath(Graph graph) {
-        throw new NotImplementedError();
+        List<Set<Graph.Vertex>> allResults = new ArrayList<>();
+        graph.getVertices().forEach(vertex -> {
+            Set<Graph.Vertex> res = new HashSet<>();
+            find(graph, vertex, res);
+            res.remove(vertex);
+            allResults.add(res);
+        });
+
+        Set<Graph.Vertex> max = new HashSet<>();
+        for (Set<Graph.Vertex> list : allResults) {
+            max = max.size() < list.size() ? list : max;
+        }
+
+        return new Path(new ArrayList<>(max), max.size());
+    }
+    private static void find(Graph graph, Graph.Vertex vertex, Set<Graph.Vertex> result) {
+        for (Graph.Edge edge : graph.getEdges()) {
+            if (edge.getBegin().getName().equals(vertex.getName())) {
+                find(graph, edge.getEnd(), result);
+            }
+        }
+        result.add(vertex);
     }
 }
